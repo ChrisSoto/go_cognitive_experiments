@@ -5,26 +5,55 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Post {
-  id        String     @default(cuid()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  role      Role     @default(USER)
+
+  @@map(name: "users")
 }
 
-model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  @@map(name: "users")
+model WorkMemExperiment {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now()) @map(name: "created_at")
+  updatedAt DateTime       @updatedAt @map(name: "updated_at")
+  trials    WorkMemTrial[]
+
+  @@map(name: "working_memory_experiments")
+}
+
+model WorkMemTrial {
+  id           String            @id @default(cuid())
+  experiment   WorkMemExperiment @relation(fields: [experimentId], references: [id])
+  experimentId String
+  createdAt    DateTime          @default(now()) @map(name: "created_at")
+  trial        Int
+  modality     Modality?
+  sound        Boolean?
+  pace         Int?
+  length       Int?
+  correct      Boolean?
+  original     String?
+  entered      String?
+
+  @@map(name: "working_memory_trials")
+}
+
+enum Modality {
+  DIGITS
+  SHAPES
+  MATH
+}
+
+enum Role {
+  ADMIN
+  USER
+  ANON
 }
