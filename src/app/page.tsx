@@ -2,14 +2,20 @@ import prisma from '../../lib/prisma'
 
 export default async function Home() {
 
-  const experiment = await prisma.workMemExperiment.findFirst();
-  const trials = await prisma.workMemTrial.findMany({
+  // const experiment = await prisma.workMemExperiment.findFirst();
+  // const trials = await prisma.workMemTrial.findMany({
+  //   where: {
+  //     experimentId: experiment?.id
+  //   }
+  // });
+
+  const users = await prisma.user.findFirst({
     where: {
-      experimentId: experiment?.id
+      name: 'Chris'
     }
   });
 
-  console.log(trials)
+  console.log(users)
 
   // const feed = await prisma.post.findMany({
   //   where: { published: true },

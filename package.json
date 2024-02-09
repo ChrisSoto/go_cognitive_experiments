@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "dev:migrate:postgres": "dotenv -e .env.development -- npx prisma migrate dev"
+    "dev:migrate:postgres": "dotenv -e .env.development -- npx prisma migrate dev",
+    "dev:prisma-studio": "dotenv -e .env.development -- npx prisma studio"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.8.1",
