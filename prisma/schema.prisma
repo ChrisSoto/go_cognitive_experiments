@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  url       = env("POSTGRES_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
@@ -15,6 +15,7 @@ model User {
   name      String?
   email     String?  @unique
   createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
   role      Role     @default(USER)
 
   @@map(name: "users")
@@ -23,16 +24,16 @@ model User {
 model WorkMemExperiment {
   id        String         @id @default(cuid())
   createdAt DateTime       @default(now()) @map(name: "created_at")
-  updatedAt DateTime       @updatedAt @map(name: "updated_at")
   trials    WorkMemTrial[]
 
+  @@index([createdAt])
   @@map(name: "working_memory_experiments")
 }
 
 model WorkMemTrial {
   id           String            @id @default(cuid())
   experiment   WorkMemExperiment @relation(fields: [experimentId], references: [id])
-  experimentId String
+  experimentId String            @map(name: "experiment_id")
   createdAt    DateTime          @default(now()) @map(name: "created_at")
   trial        Int
   modality     Modality?
@@ -43,6 +44,7 @@ model WorkMemTrial {
   original     String?
   entered      String?
 
+  @@index([createdAt])
   @@map(name: "working_memory_trials")
 }
 
